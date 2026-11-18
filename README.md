@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Budol — Pedalboard Planner
 
-## Getting Started
+Plan a guitar pedalboard to scale. Pick from 268 real pedalboards (or enter a custom size), drop in any of ~8,900 pedals, and see instantly what fits and roughly what it costs in pesos.
 
-First, run the development server:
+Pedal and board data/images come from the [PedalPlayground](https://github.com/PedalPlayground/PedalPlayground.github.io) catalog.
+
+## Features
+
+- **Board picker** with search, size filters, thumbnails and custom dimensions
+- **Pedal library** – fast virtualised search across brands and models, with thumbnails and sizes
+- **Drag from the library** onto the board, or click to auto-place in the next free spot (right-to-left, like a signal chain)
+- **Fit checking** – overlapping pedals and pedals too big for the board are highlighted, plus a "space used" meter
+- **Selection toolbar** – rotate, duplicate, bring to front, remove
+- **Undo / redo** for every edit, with "Undo" on destructive toasts
+- **Zoom** (buttons, `+`/`-`, Ctrl/⌘ + scroll) with fit-to-screen
+- **Rig panel** – per-pedal market price, total estimate and Lazada search links
+- Inches / centimetres, light / dark theme, keyboard shortcuts (press `?`), responsive layout for phones and tablets
+- Your board is saved in the browser automatically
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prices (optional)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Price estimates use the median of used listings on Reverb, converted to PHP. Set a Reverb API token to enable them:
 
-## Learn More
+```bash
+# .env.local
+REVERB_API=your-reverb-personal-access-token
+```
 
-To learn more about Next.js, take a look at the following resources:
+Without a token the planner works normally; prices just show as unavailable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Path | What it is |
+| --- | --- |
+| `app/page.tsx` | Loads and normalises the catalog on the server (cached for a day) |
+| `app/actions/getPrice.ts` | Server action for Reverb price lookup |
+| `components/planner/` | The planner UI: header, library, workspace, rig panel, dialogs |
+| `store/usePedalStore.ts` | Zustand store (persisted) with undo/redo; sizes and positions are in inches |
+| `lib/catalog.ts` | Image URLs, formatting, fit/overlap geometry, auto-placement |
